@@ -350,10 +350,11 @@ if not games:
     st.warning("No games scheduled today.")
     st.stop()
 
-game_options = {
-    f"{g['away']} @ {g['home']} ({g['status']})": g["game_id"]
-    for g in games
-}
+game_options = {}
+for g in games:
+    time_str = f" - {g['game_time']}" if g["game_time"] and g["status"] in ("Scheduled", "Pre-Game") else ""
+    label = f"{g['away']} @ {g['home']} ({g['status']}{time_str})"
+    game_options[label] = g["game_id"]
 
 selected_label = st.selectbox("Select a game", options=list(game_options.keys()))
 game_id = game_options[selected_label]

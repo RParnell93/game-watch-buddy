@@ -1,7 +1,21 @@
 """Poll MLB Stats API for live game data."""
 
 import statsapi
-from datetime import datetime
+from datetime import datetime, timezone
+
+
+def _format_game_time(dt_str: str) -> str:
+    """Convert UTC datetime string to local time like '7:05 PM ET'."""
+    if not dt_str:
+        return ""
+    try:
+        utc = datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
+        local = utc.astimezone()
+        time_str = local.strftime("%-I:%M %p")
+        tz_name = local.strftime("%Z")
+        return f"{time_str} {tz_name}"
+    except Exception:
+        return ""
 
 
 def get_todays_games() -> list[dict]:
@@ -19,7 +33,7 @@ def get_todays_games() -> list[dict]:
             "status": g["status"],
             "away_score": g.get("away_score", 0),
             "home_score": g.get("home_score", 0),
-            "game_time": g.get("game_datetime", ""),
+            "game_time": _format_game_time(g.get("game_datetime", "")),
             "summary": g.get("summary", ""),
         })
     return games
