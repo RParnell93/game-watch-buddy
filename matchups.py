@@ -10,10 +10,18 @@ load_dotenv()
 _conn = None
 
 
+def _get_token():
+    try:
+        import streamlit as st
+        return st.secrets.get("MOTHERDUCK_TOKEN") or os.environ.get("MOTHERDUCK_TOKEN")
+    except Exception:
+        return os.environ.get("MOTHERDUCK_TOKEN")
+
+
 def _get_conn():
     global _conn
     if _conn is None:
-        token = os.environ.get("MOTHERDUCK_TOKEN")
+        token = _get_token()
         if token:
             _conn = duckdb.connect(f"md:baseball?motherduck_token={token}")
         else:

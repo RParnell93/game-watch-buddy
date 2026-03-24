@@ -9,8 +9,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def _get_token():
+    try:
+        import streamlit as st
+        return st.secrets.get("MOTHERDUCK_TOKEN") or os.environ.get("MOTHERDUCK_TOKEN")
+    except Exception:
+        return os.environ.get("MOTHERDUCK_TOKEN")
+
+
 def _get_conn():
-    token = os.environ.get("MOTHERDUCK_TOKEN")
+    token = _get_token()
     if token:
         return duckdb.connect(f"md:baseball?motherduck_token={token}")
     raise RuntimeError("MOTHERDUCK_TOKEN not set")
