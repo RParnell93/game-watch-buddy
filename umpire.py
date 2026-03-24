@@ -12,7 +12,7 @@ load_dotenv()
 def _get_token():
     try:
         import streamlit as st
-        return st.secrets.get("MOTHERDUCK_TOKEN") or os.environ.get("MOTHERDUCK_TOKEN")
+        return st.secrets["MOTHERDUCK_TOKEN"]
     except Exception:
         return os.environ.get("MOTHERDUCK_TOKEN")
 
